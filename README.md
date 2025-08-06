@@ -87,6 +87,7 @@ python manage.py createsuperuser
 ```
 reminder_app/
 │
+├── accounts/             # Kullanıcı işlemleri
 ├── core/                 # Uygulama mantığı ve task'lar
 ├── templates/            # HTML dosyaları
 ├── static/               # CSS, JS, ikonlar
