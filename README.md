@@ -39,6 +39,7 @@ cd reminder-app
 ```
 
 ### 2. .env dosyasını oluşturun
+```bash
 SECRET_KEY=your_secret_key_here
 DEBUG=True
 ALLOWED_HOSTS=*
@@ -53,9 +54,9 @@ EMAIL_USE_TLS=True
 EMAIL_HOST_USER=youremail@gmail.com
 EMAIL_HOST_PASSWORD=yourpassword
 DEFAULT_FROM_EMAIL=Reminder App <noreply@reminderapp.com>
+```
 
-
-Gmail SMTP kullanacaksan uygulama şifresi kullanman önerilir.
+> Gmail SMTP kullanacaksan uygulama şifresi kullanman önerilir.
 
 ### 3. Docker ile ayağa kaldırın
 
