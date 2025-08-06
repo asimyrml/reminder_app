@@ -1,0 +1,562 @@
+{% extends "base.html" %}
+
+{% block title %}
+Hatırlatıcı Uygulaması
+{% endblock title %}
+
+
+{% block extra_css %}
+<style>
+    /* Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f0f2f5, #e9ecef);
+        color: #333;
+    }
+
+    h2 {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    /* Card genel görünüm */
+    .card {
+        border-radius: 16px;
+        border: none;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+
+    .card-header {
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+
+    /* Reminder list item */
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid #f1f1f1;
+        transition: background 0.3s ease;
+        cursor: pointer;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .list-group-item strong {
+        color: #495057;
+    }
+
+    .list-group-item small {
+        color: #868e96;
+    }
+
+    /* Scrollbar özelleştirme */
+    .card-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .card-body::-webkit-scrollbar-thumb {
+        background-color: #adb5bd;
+        border-radius: 10px;
+    }
+
+    /* Form inputlar */
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+        padding: 10px 12px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #4dabf7;
+        box-shadow: 0 0 0 0.25rem rgba(77,171,247,.25);
+    }
+
+    .btn {
+        border-radius: 12px;
+        font-weight: 500;
+        transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Gradient headerlar */
+    .bg-dark {
+        background: linear-gradient(135deg, #343a40, #495057) !important;
+    }
+
+    .bg-primary {
+        background: linear-gradient(135deg, #228be6, #4dabf7) !important;
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, #40c057, #69db7c) !important;
+    }
+
+    /* Not kutusu */
+    #noteArea {
+        border-radius: 12px;
+        resize: none;
+        min-height: 200px;
+    }
+    .note-card {
+        border-radius: 12px;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+    .note-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+</style>
+{% endblock extra_css %}
+
+
+{% block body %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Hatırlatıcı Uygulaması</h2>
+
+    <div class="row g-4">
+        <!-- Left Panel: Reminder List -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Hatırlatıcılarım</h5>
+                </div>
+                <div class="card-body p-2" style="max-height:70vh; overflow-y:auto;">
+                    {% if reminders %}
+                        <ul class="list-group list-group-flush">
+                            {% for reminder in reminders %}
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ reminder.title }}</strong><br>
+                                        <small class="text-muted">{{ reminder.date|date:"d M Y H:i" }}</small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger ms-2 delete-reminder-btn" data-id="{{ reminder.id }}">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">Henüz bir hatırlatıcınız yok</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Panel: Notes -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Notlarım</h5>
+                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addNoteModal">+ Yeni Not</button>
+                </div>
+                <div class="card-body" id="notesBody" style="max-height:70vh; overflow-y:auto;">
+                    {% if notes %}
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                            {% for note in notes %}
+                                <div class="col">
+                                    <div class="card h-100 note-card">
+                                        <div class="card-body position-relative">
+                                            <button class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2 delete-note-btn" data-id="{{ note.id }}">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                            <h6 class="card-title">{{ note.title }}</h6>
+                                            <p class="card-text text-muted">{{ note.content|truncatewords:20 }}</p>
+                                            {% if note.reminder_date %}
+                                                <span class="badge bg-warning text-dark">
+                                                    Hatırlatma: {{ note.reminder_date|date:"d M Y H:i" }}
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Henüz bir notunuz yok.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Yeni Hatırlatıcı Formu -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Yeni Hatırlatıcı</h5>
+                </div>
+                <div class="card-body">
+                    <form id="reminderForm" method="POST" action="{% url 'create_reminder' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Başlık</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Açıklama</label>
+                            <textarea class="form-control" name="description" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hatırlatma Tarihi</label>
+                            <input type="text" id="remindAtInput" class="form-control" name="remind_at" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tekrar</label>
+                            <select class="form-select" name="repeat_type" id="repeatTypeSelect">
+                                <option value="none">Tek Seferlik</option>
+                                <option value="interval">Belirli Aralıklarla (dk)</option>
+                                <option value="custom_day">Ayın Belirli Günü</option>
+                                <option value="custom_weekday">Haftanın Belirli Günü</option>
+                            </select>
+                        </div>
+
+                        <!-- Aralık (dakika) input -->
+                        <div class="mb-3 d-none" id="intervalInputWrapper">
+                            <label class="form-label">Kaç dakikada bir tekrar edilsin?</label>
+                            <input type="number" name="interval_minutes" class="form-control" min="1">
+                        </div>
+
+                        <!-- Ayın günü input -->
+                        <div class="mb-3 d-none" id="customDayWrapper">
+                            <label class="form-label">Ayın kaçıncı günü?</label>
+                            <input type="number" name="day_of_month" class="form-control" min="1" max="31">
+                        </div>
+
+                        <!-- Haftanın günü input -->
+                        <div class="mb-3 d-none" id="customWeekdayWrapper">
+                            <label class="form-label">Haftanın günü</label>
+                            <select name="day_of_week" class="form-select">
+                                <option value="">Seçiniz</option>
+                                <option value="0">Pazartesi</option>
+                                <option value="1">Salı</option>
+                                <option value="2">Çarşamba</option>
+                                <option value="3">Perşembe</option>
+                                <option value="4">Cuma</option>
+                                <option value="5">Cumartesi</option>
+                                <option value="6">Pazar</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Kaydet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addNoteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form id="noteForm" method="POST" action="{% url 'create_note' %}">
+            {% csrf_token %}
+            <div class="modal-header">
+            <h5 class="modal-title">Yeni Not</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+            <div class="mb-3">
+                <label class="form-label">Başlık</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">İçerik</label>
+                <textarea name="content" class="form-control" rows="4" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Hatırlatma (opsiyonel)</label>
+                <input type="text" id="noteReminderInput" name="reminder_date" class="form-control" placeholder="Tarih ve saat seçin">
+            </div>
+            </div>
+            <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock body %}
+
+{% block js %}
+<script>
+// Hatırlatıcı için tarih seçici
+flatpickr("#remindAtInput", {
+    enableTime: true,
+    dateFormat: "Y-m-d H:i",
+    time_24hr: true,
+    locale: "tr",
+    minDate: "today",
+    defaultDate: null,
+    onOpen: function(selectedDates, dateStr, instance) {
+        if (!instance.input.value) {
+            instance.setDate(new Date());
+        }
+    }
+});
+
+// Modal'daki not için tarih seçici
+flatpickr("#noteReminderInput", {
+    enableTime: true,
+    dateFormat: "Y-m-d H:i",
+    time_24hr: true,
+    locale: "tr",
+    minDate: "today",
+    defaultDate: null,
+    onOpen: function(selectedDates, dateStr, instance) {
+        if (!instance.input.value) {
+            instance.setDate(new Date());
+        }
+    }
+});
+
+// Hatırlatıcı formu gönderme
+document.querySelector('#reminderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    let form = e.target;
+    let formData = new FormData(form);
+
+    const repeatType = formData.get('repeat_type');
+
+    // Opsiyonel alanlar, seçime göre gönderilsin
+    if (repeatType === 'interval') {
+        formData.append('interval_minutes', form.querySelector('[name="interval_minutes"]').value || '');
+    } else if (repeatType === 'custom_day') {
+        formData.append('day_of_month', form.querySelector('[name="day_of_month"]').value || '');
+    } else if (repeatType === 'custom_weekday') {
+        formData.append('day_of_week', form.querySelector('[name="day_of_week"]').value || '');
+    }
+
+    fetch("{% url 'create_reminder' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+        },
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Başarılı',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            const list = document.querySelector('.card-body ul.list-group');
+            const li = document.createElement('li');
+            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+            li.innerHTML = `
+                <div>
+                    <strong>${data.reminder.title}</strong><br>
+                    <small class="text-muted">${data.reminder.date}</small>
+                </div>
+                <button class="btn btn-sm btn-outline-danger delete-reminder-btn" data-id="${data.reminder.id}">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            `;
+            if (list) {
+                list.prepend(li);
+            } else {
+                const newList = document.createElement('ul');
+                newList.classList.add('list-group', 'list-group-flush');
+                newList.appendChild(li);
+                document.querySelector('.card-body').appendChild(newList);
+                const emptyMsg = document.querySelector('.card-body p');
+                if (emptyMsg) emptyMsg.remove();
+            }
+
+            form.reset();
+        } else {
+            Swal.fire({ icon: 'error', title: 'Hata', text: data.message });
+        }
+    })
+    .catch(err => {
+        console.error('İstek hatası:', err);
+        Swal.fire({ icon: 'error', title: 'Hata', text: 'Sunucu ile iletişimde hata oluştu.' });
+    });
+});
+
+
+// Not formu gönderme
+document.querySelector('#noteForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    let form = e.target;
+    let formData = new FormData(form);
+
+    fetch("{% url 'create_note' %}", {
+        method: 'POST',
+        headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Başarılı',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            const notesBody = document.querySelector('#notesBody');
+            let row = notesBody.querySelector('.row');
+            if (!row) {
+                row = document.createElement('div');
+                row.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'g-3');
+                notesBody.innerHTML = '';
+                notesBody.appendChild(row);
+            }
+
+            const col = document.createElement('div');
+            col.classList.add('col');
+            col.innerHTML = `
+                <div class="card h-100 note-card">
+                    <div class="card-body d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title">${data.note.title}</h6>
+                            <p class="card-text text-muted">${data.note.content}</p>
+                            ${data.note.reminder_date ? `<span class="badge bg-warning text-dark">Hatırlatma: ${data.note.reminder_date}</span>` : ''}
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger delete-note-btn" data-id="${data.note.id}">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            row.prepend(col);
+
+            form.reset();
+            const modal = bootstrap.Modal.getInstance(document.querySelector('#addNoteModal'));
+            modal.hide();
+        } else {
+            Swal.fire({ icon: 'error', title: 'Hata', text: data.message });
+        }
+    })
+    .catch(err => {
+        console.error('Fetch error:', err);
+        Swal.fire({ icon: 'error', title: 'Hata', text: 'İstek gönderilirken bir hata oluştu.' });
+    });
+});
+
+// Silme işlemleri (event delegation)
+document.addEventListener('click', function(e) {
+    // Hatırlatıcı silme
+    if (e.target.closest('.delete-reminder-btn')) {
+        const btn = e.target.closest('.delete-reminder-btn');
+        const reminderId = btn.dataset.id;
+
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Bu hatırlatıcı silinecek!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'Vazgeç'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`reminders/delete/${reminderId}/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Silindi', data.message, 'success');
+                        btn.closest('li').remove();
+
+                        // Eğer listede hiç eleman kalmadıysa mesaj göster
+                        const list = document.querySelector('.card-body ul.list-group');
+                        if (!list || list.children.length === 0) {
+                            document.querySelector('.card-body.p-2').innerHTML = '<p class="text-muted">Henüz bir hatırlatıcınız yok</p>';
+                        }
+                    } else {
+                        Swal.fire('Hata', data.message, 'error');
+                    }
+                })
+                .catch(() => Swal.fire('Hata', 'Silme işlemi başarısız.', 'error'));
+            }
+        });
+    }
+
+    // Not silme
+    if (e.target.closest('.delete-note-btn')) {
+        const btn = e.target.closest('.delete-note-btn');
+        const noteId = btn.dataset.id;
+
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "Bu not silinecek!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'Vazgeç'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`notes/delete/${noteId}/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Silindi', data.message, 'success');
+                        btn.closest('.col').remove();
+
+                        // Eğer hiç not kalmadıysa mesaj göster
+                        const notesBody = document.querySelector('#notesBody .row');
+                        if (!notesBody || notesBody.children.length === 0) {
+                            document.querySelector('#notesBody').innerHTML = '<p class="text-muted">Henüz bir notunuz yok.</p>';
+                        }
+                    } else {
+                        Swal.fire('Hata', data.message, 'error');
+                    }
+                })
+                .catch(() => Swal.fire('Hata', 'Silme işlemi başarısız.', 'error'));
+            }
+        });
+    }
+});
+
+
+document.getElementById("repeatTypeSelect").addEventListener("change", function () {
+    const value = this.value;
+    document.getElementById("intervalInputWrapper").classList.add("d-none");
+    document.getElementById("customDayWrapper").classList.add("d-none");
+    document.getElementById("customWeekdayWrapper").classList.add("d-none");
+
+    if (value === "interval") {
+        document.getElementById("intervalInputWrapper").classList.remove("d-none");
+    } else if (value === "custom_day") {
+        document.getElementById("customDayWrapper").classList.remove("d-none");
+    } else if (value === "custom_weekday") {
+        document.getElementById("customWeekdayWrapper").classList.remove("d-none");
+    }
+});
+</script>
+{% endblock js %}
