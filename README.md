@@ -99,7 +99,7 @@ reminder_app/
 ```
 
 ## 📌 Yol Haritası
--Tek seferlik hatırlatıcılar
+- Tek seferlik hatırlatıcılar
 - Belirli aralıklarla tekrarlayan hatırlatmalar
 - Haftalık / aylık tekrar
 - Kullanıcıya timezone desteği
