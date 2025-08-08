@@ -27,7 +27,15 @@ SECRET_KEY = 'django-insecure-=ufu!9rd*6rusmopi=^h(hsvlb8m*))m19igy88%*s)ywg_5lm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["104.155.167.182", "localhost"]
+def env_list(name, default=None):
+    v = os.getenv(name, "")
+    if not v:
+        return default or []
+    items = [x.strip() for x in v.split(",") if x.strip()]
+    # env'de "*" varsa komple serbest bırak
+    return ["*"] if any(i == "*" for i in items) else items
+
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", ["localhost"])
 
 
 # Application definition
