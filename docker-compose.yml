@@ -3,11 +3,15 @@ services:
     build: .
     container_name: reminder_django
     command: >
-      sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
-    volumes:
-      - .:/app
-      - static_volume:/app/staticfiles
+      sh -c "
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      gunicorn reminder_app.wsgi:application --bind 0.0.0.0:8000
+      "
+    # PROD için en temizi bu iki satırı KALDIRMAK (code image içine baked olur)
+    # volumes:
+    #   - .:/app
+    #   - static_volume:/app/staticfiles
     ports:
       - "8000:8000"
     env_file:
