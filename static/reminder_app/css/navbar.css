@@ -1,0 +1,125 @@
+/* Temel değişkenler */
+:root{
+  --rmd-primary-1:#667eea;
+  --rmd-primary-2:#764ba2;
+  --rmd-focus:rgba(86,103,253,.28);
+
+  --rmd-surface: rgba(255,255,255,0.10);
+  --rmd-text: #ffffff;
+  --rmd-link: #f5f5f5;
+  --rmd-link-active: #ffd6e0;
+  --rmd-border: rgba(255,255,255,0.18);
+  --rmd-shadow: rgba(86,103,253,0.12);
+}
+
+:root[data-theme="dark"]{
+  --rmd-primary-1:#5a67d8;
+  --rmd-primary-2:#6b46c1;
+  --rmd-surface: rgba(0,0,0,0.22);
+  --rmd-text:#eaeaea;
+  --rmd-link:#e6e6e6;
+  --rmd-link-active:#ffd6e0;
+  --rmd-border: rgba(255,255,255,0.24);
+  --rmd-shadow: rgba(0,0,0,0.35);
+}
+
+/* Nav çerçeve */
+.rmd-navbar{
+  background: var(--rmd-surface);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rmd-border);
+  box-shadow: 0 6px 26px var(--rmd-shadow);
+}
+
+/* İç genişlik kontrolü */
+.rmd-nav-container{ padding-left:16px; padding-right:16px; }
+
+/* Brand */
+.rmd-brand{ gap:10px; }
+.rmd-brand-badge{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:40px; height:40px; border-radius:12px;
+  background:#fff;
+  box-shadow:0 4px 14px rgba(86,103,253,0.18);
+}
+.rmd-navbar-logo{ width:24px; height:24px; object-fit:contain; }
+.rmd-brand-text{
+  color: var(--rmd-text);
+  font-weight:800; letter-spacing:.3px; text-shadow:0 1px 10px rgba(0,0,0,.22);
+}
+
+/* Toggler */
+.rmd-toggler{ border:1px solid rgba(255,255,255,.35); border-radius:10px; }
+.rmd-toggler:focus{ box-shadow:0 0 0 3px var(--rmd-focus) }
+
+/* Nav linkleri */
+.rmd-navlist .nav-link{ padding:10px 12px; }
+.rmd-navlink{
+  color: var(--rmd-link) !important;
+  position:relative; font-weight:600; transition:color .2s ease, opacity .2s ease; opacity:.95;
+}
+.rmd-navlink:hover{ color: var(--rmd-text) !important; opacity:1; }
+.rmd-navlink .rmd-underline{
+  position:absolute; left:12px; right:12px; bottom:4px; height:3px; border-radius:999px;
+  background: linear-gradient(90deg, var(--rmd-primary-1), var(--rmd-primary-2));
+  transform: scaleX(0); transform-origin:left; transition:transform .25s ease; pointer-events:none;
+}
+.rmd-navlink:hover .rmd-underline,
+.rmd-navlink.active .rmd-underline{ transform: scaleX(1); }
+
+/* Sağ aksiyonlar */
+.rmd-actions .btn{ white-space:nowrap; }
+
+/* Chip Button */
+.rmd-btn-chip{
+  background: rgba(255,255,255,.12); color: var(--rmd-text);
+  border:1px solid rgba(255,255,255,.35); border-radius:999px;
+  padding:6px 12px; font-weight:600;
+}
+.rmd-btn-chip:hover{ background: rgba(255,255,255,.18); }
+
+/* Solid & Outline butonlar */
+.rmd-btn-solid{
+  background: linear-gradient(120deg, var(--rmd-primary-1), var(--rmd-primary-2));
+  border:none; border-radius:10px; padding:8px 16px; font-weight:700; color:#fff;
+  box-shadow: 0 2px 10px rgba(86,103,253,.15);
+}
+.rmd-btn-solid:hover{ filter:brightness(1.05) }
+
+.rmd-btn-outline{
+  background:transparent; color: var(--rmd-text);
+  border:1.5px solid rgba(255,255,255,0.7); border-radius:10px; padding:8px 16px; font-weight:700;
+}
+.rmd-btn-outline:hover{ background: rgba(255,255,255,0.15); }
+
+/* Oval buton */
+.rmd-btn-pill{
+  background: linear-gradient(120deg, var(--rmd-primary-1), var(--rmd-primary-2));
+  color:#fff; border:none; border-radius:999px; padding:8px 16px; font-weight:700;
+}
+.rmd-btn-pill:hover{ filter:brightness(1.05) }
+
+/* Profil */
+.rmd-profile{ color: var(--rmd-text) !important; }
+.rmd-avatar{
+  width:36px; height:36px; border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+  background: linear-gradient(120deg, var(--rmd-primary-1), var(--rmd-primary-2));
+  color:#fff; font-weight:800; font-size:.95rem;
+  box-shadow:0 4px 12px rgba(86,103,253,.22);
+}
+
+/* Dropdown */
+.rmd-dropdown{
+  border-radius:14px; border:1px solid rgba(0,0,0,.06);
+  box-shadow:0 12px 40px rgba(0,0,0,.18); padding:6px;
+}
+.rmd-dropdown .dropdown-item{ border-radius:10px; font-weight:500; }
+.rmd-dropdown .dropdown-item:hover{ background: rgba(102,126,234,.12); }
+
+/* Responsive */
+@media (max-width:992px){
+  .rmd-brand-text{ font-size:1.1rem; }
+  .rmd-actions .btn{ padding:8px 12px; }
+}

@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&display=swap');
+
+:root{
+  --rmd-primary-1:#667eea;
+  --rmd-primary-2:#764ba2;
+  --rmd-focus:rgba(86,103,253,.28);
+}
+
+*{box-sizing:border-box}
+
+body{
+  font-family:'Montserrat','Poppins',sans-serif;
+  background:linear-gradient(120deg,var(--rmd-primary-1) 0%, var(--rmd-primary-2) 100%);
+  position:relative; overflow-x:hidden; color:#333;
+}
+
+/* Header */
+.rmd-app-header{
+  width:100%; background:rgba(255,255,255,.10);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  box-shadow:0 4px 24px rgba(86,103,253,.08);
+  display:flex; align-items:center; gap:18px; padding:28px 16px 22px;
+  justify-content:center; position:relative; z-index:2;
+}
+.rmd-app-header img{width:56px; height:56px; border-radius:16px; background:#fff; object-fit:contain; box-shadow:0 2px 12px rgba(86,103,253,.15)}
+.rmd-app-title{color:#fff; font-size:2rem; font-weight:700; letter-spacing:.5px; margin:0; text-shadow:0 2px 16px rgba(86,103,253,.18)}
+
+.rmd-page-title{color:#fff; text-shadow:0 1px 12px rgba(0,0,0,.15)}
+
+/* Stats */
+.rmd-stats-row .rmd-stat{
+  display:flex; gap:12px; align-items:center;
+  background:rgba(255,255,255,.18);
+  border:1.5px solid rgba(255,255,255,.22);
+  border-radius:16px; padding:14px 16px;
+  -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px);
+  box-shadow:0 8px 30px rgba(86,103,253,.16);
+}
+.rmd-stat-icon{
+  width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(120deg,var(--rmd-primary-1),var(--rmd-primary-2));
+  color:#fff; font-size:1.2rem; box-shadow:0 6px 16px rgba(0,0,0,.18);
+}
+.rmd-stat-label{ color:#f7f7f7; font-weight:600; margin-bottom:2px }
+.rmd-stat-value{ color:#fff; font-weight:800; font-size:1.35rem }
+.rmd-stat-warning .rmd-stat-icon{ background:linear-gradient(120deg,#f59e0b,#fbbf24) }
+.rmd-stat-success .rmd-stat-icon{ background:linear-gradient(120deg,#10b981,#34d399) }
+
+/* Cards */
+.rmd-card{
+  background:rgba(255,255,255,.18);
+  border:1.5px solid rgba(255,255,255,.22);
+  border-radius:20px; overflow:hidden;
+  -webkit-backdrop-filter:blur(18px); backdrop-filter:blur(18px);
+  transition:transform .3s ease, box-shadow .3s ease;
+  box-shadow:0 8px 40px rgba(86,103,253,.18);
+}
+.rmd-card:hover{ transform:translateY(-4px); box-shadow:0 12px 50px rgba(0,0,0,.25) }
+
+.rmd-card-header{ font-weight:600; letter-spacing:.3px; border-bottom:1px solid rgba(255,255,255,.2) }
+.rmd-header-primary{ background:linear-gradient(135deg,#228be6,#4dabf7) }
+.rmd-header-success{ background:linear-gradient(135deg,#40c057,#69db7c) }
+.rmd-header-dark{ background:linear-gradient(135deg,#343a40,#495057) }
+
+/* Sticky right panel */
+.rmd-sticky{ position:sticky; top:24px }
+
+/* Inputs & Buttons */
+.rmd-label{color:#f0f0f0; font-weight:500}
+.rmd-input{
+  background:rgba(255,255,255,.96); border:none; border-radius:12px; padding:12px 14px; font-size:15px; transition:box-shadow .2s ease
+}
+.rmd-input:focus-visible{outline:none; box-shadow:0 0 0 3px var(--rmd-focus)}
+
+.rmd-btn{
+  background:linear-gradient(120deg,var(--rmd-primary-1),var(--rmd-primary-2));
+  border:none; border-radius:12px; padding:12px 14px; font-size:16px; font-weight:700;
+  box-shadow:0 2px 12px rgba(86,103,253,.10)
+}
+.rmd-btn:hover{ filter:brightness(1.02) }
+.rmd-btn:focus-visible{ outline:3px solid var(--rmd-focus) }
+
+/* Tabs + toolbar */
+.rmd-tabs .nav-link{
+  color:#fff; border:none; border-bottom:3px solid transparent; font-weight:700; opacity:.95;
+}
+.rmd-tabs .nav-link.active{ border-bottom-color:#fff }
+.rmd-toolbar{ min-width:260px }
+.rmd-search{ position:relative }
+.rmd-search i{ position:absolute; left:10px; top:50%; transform:translateY(-50%); opacity:.6 }
+.rmd-search input{ padding-left:30px }
+
+/* List items */
+.rmd-list-item{ border:none; border-bottom:1px solid rgba(255,255,255,.25); background:transparent; transition:background .25s ease; cursor:pointer }
+.rmd-list-item:hover{ background:rgba(255,255,255,.12) }
+.rmd-item-title{ color:#2d2d2d }
+
+/* Notes */
+.rmd-note-card{ border-radius:14px; transition:transform .2s ease, box-shadow .3s ease }
+.rmd-note-card:hover{ transform:translateY(-4px); box-shadow:0 8px 16px rgba(0,0,0,.12) }
+
+.rmd-empty{ display:flex; flex-direction:column; align-items:center; justify-content:center; color:#f0f0f0; padding:60px 12px; gap:12px }
+.rmd-empty i{ font-size:2rem; opacity:.9 }
+
+/* Scrollable + scrollbar */
+.rmd-scrollable{ overflow-y:auto }
+.rmd-scrollable::-webkit-scrollbar{ width:8px }
+.rmd-scrollable::-webkit-scrollbar-thumb{ background-color:#adb5bd; border-radius:10px }
+
+/* Quick preset chip */
+.rmd-quickset{ display:flex; gap:8px; flex-wrap:wrap }
+.rmd-chip{
+  background:rgba(255,255,255,.16); color:#fff; border:1px solid rgba(255,255,255,.35);
+  border-radius:999px; padding:6px 10px; font-weight:600
+}
+.rmd-chip:hover{ background:rgba(255,255,255,.22) }
+
+/* Blobs */
+.rmd-blob{ position:absolute; border-radius:50%; filter:blur(120px); opacity:.5; z-index:0 }
+.rmd-blob1{ width:420px; height:420px; background:#ff9a9e; top:-120px; left:-120px }
+.rmd-blob2{ width:350px; height:350px; background:#fad0c4; bottom:-100px; right:-100px }
+.rmd-blob3{ width:180px; height:180px; background:#a18cd1; top:60%; left:60% }
+
+@media (max-width:600px){
+  .rmd-app-title{ font-size:1.3rem }
+  .rmd-app-header img{ width:38px; height:38px }
+}
+
+
+/* Backdrop biraz daha koyu, gradient arka planı bastırsın */
+.modal-backdrop.show {
+  background-color: rgba(10, 12, 20, 0.65);
+}
+
+/* Modal yüzeyi: yarı opak koyu/aydınlık glass */
+.rmd-modal {
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(20, 24, 35, 0.85); /* koyu cam */
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
+}
+
+/* Light tema için biraz açık alternatif (istersen tek renk de bırakabilirsin) */
+:root[data-theme="light"] .rmd-modal {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Başlık şeridi */
+.rmd-modal-header {
+  background: linear-gradient(135deg, var(--rmd-primary-1), var(--rmd-primary-2));
+  color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+/* İç boşluk ve daha ferah görünüm */
+.rmd-modal-body { padding: 1rem 1.1rem; }
+.rmd-modal-footer {
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+/* Modal içindeki inputlar: daha net zemin + gölge */
+.rmd-input-strong {
+  background: #ffffff !important;
+  color: #1f2937;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+}
+.rmd-input-strong:focus {
+  box-shadow: 0 0 0 3px var(--rmd-focus) !important;
+}
+
+/* Label kontrastı modal içinde artır */
+.rmd-modal .rmd-label {
+  color: #f5f5f5;
+}
+:root[data-theme="light"] .rmd-modal .rmd-label {
+  color: #374151;
+}
+
+/* Flatpickr modal üstünde kalsın */
+.flatpickr-calendar {
+  z-index: 1065 !important; /* Bootstrap modal 1050 */
+}
+
+/* Mobilde modal kenarlara yapışmasın */
+@media (max-width: 576px) {
+  .modal-dialog {
+    margin: 0.75rem;
+  }
+}
+
+/* Bootstrap'in default .modal-content arkaplanını bastıralım (güvenlik için) */
+.modal-content {
+  background: transparent;
+}
