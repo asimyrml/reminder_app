@@ -1,143 +1,102 @@
 {% load static %}
-<link rel="icon" href="{% static 'images/reminder-icon.png' %}" type="image/x-icon">
-
-<style>
-
-body {
-    background: linear-gradient(135deg, #74ABE2, #5563DE);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Blob efektleri */
-body::before, body::after {
-    content: '';
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    filter: blur(120px);
-    z-index: 0;
-}
-
-body::before {
-    background: #ff9a9e;
-    top: -100px;
-    left: -100px;
-}
-
-body::after {
-    background: #fad0c4;
-    bottom: -100px;
-    right: -100px;
-}
-
-/* Kart Tasarımı */
-.card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    border-radius: 25px;
-    padding: 2rem;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
-    width: 100%;
-    max-width: 420px;
-    z-index: 1;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 50px rgba(0,0,0,0.25);
-}
-
-/* Başlık */
-.card h3 {
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 1.5rem;
-}
-
-/* Input alanları */
-.form-control {
-    background: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 12px;
-    padding: 12px 15px;
-    font-size: 15px;
-    transition: all 0.3s ease;
-}
-
-.form-control:focus {
-    box-shadow: 0 0 0 3px rgba(86, 103, 253, 0.4);
-    outline: none;
-}
-
-/* Buton */
-.btn-primary {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border: none;
-    border-radius: 12px;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    transition: background 0.3s ease;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #5a67d8, #6b46c1);
-}
-
-/* Alt yazı */
-.card p {
-    color: #e6e6e6;
-    font-size: 14px;
-    margin-top: 1rem;
-}
-
-.card a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.card a:hover {
-    text-decoration: underline;
-}
-</style>
-
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Giriş Yap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Giriş Yap | Reminder App</title>
+    <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{% static 'images/reminder-icon.png' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'images/reminder-icon.png' %}" type="image/x-icon" />
+    <link href="{% static 'reminder_app/css/auth-common.css' %}" rel="stylesheet" />
+    <link href="{% static 'reminder_app/css/login.css' %}" rel="stylesheet" />
 </head>
-<body class="bg-light">
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
-            <h3 class="text-center mb-4">Giriş Yap</h3>
-            <form method="POST">
+<body>
+    <div class="rmd-blob rmd-blob1"></div>
+    <div class="rmd-blob rmd-blob2"></div>
+    <div class="rmd-blob rmd-blob3"></div>
+
+    <header class="rmd-app-header">
+        <img src="{% static 'images/reminder-icon.png' %}" alt="Reminder Icon">
+        <span class="rmd-app-title">Reminder App</span>
+    </header>
+
+    <section class="rmd-login-section">
+        <div class="rmd-login-card">
+            <h3>Giriş Yap</h3>
+
+            {# Django messages #}
+            {% if messages %}
+            <div class="rmd-messages" aria-live="polite">
+                {% for message in messages %}
+                    <div class="rmd-message {% if message.tags %}{{ message.tags }}{% else %}info{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'login' %}" novalidate id="rmd-login-form">
                 {% csrf_token %}
+
+                {# Non-field errors #}
+                {% if form and form.non_field_errors %}
+                    <div class="rmd-message error mb-2" role="alert">{{ form.non_field_errors }}</div>
+                {% endif %}
+
                 <div class="mb-3">
-                    <label for="username" class="form-label">Kullanıcı Adı</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
+                    <label for="id_username" class="rmd-label">Kullanıcı Adı</label>
+                    <input
+                        type="text"
+                        class="form-control rmd-input"
+                        id="id_username"
+                        name="username"
+                        value="{{ form.username.value|default_if_none:'' }}"
+                        required
+                        autocomplete="username"
+                        inputmode="text"
+                        placeholder="kullanici_adiniz">
+                    {% if form and form.username.errors %}
+                        <div class="invalid-feedback d-block">{{ form.username.errors.0 }}</div>
+                    {% endif %}
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Şifre</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+
+                <div class="mb-2 rmd-input-group">
+                    <label for="id_password" class="rmd-label">Şifre</label>
+                    <input
+                        type="password"
+                        class="form-control rmd-input"
+                        id="id_password"
+                        name="password"
+                        required
+                        autocomplete="current-password"
+                        placeholder="••••••••">
+                    <button type="button" class="rmd-toggle-btn" aria-label="Şifreyi göster" id="rmd-toggle-password">Göster</button>
+                    {% if form and form.password.errors %}
+                        <div class="invalid-feedback d-block">{{ form.password.errors.0 }}</div>
+                    {% endif %}
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
-                <p class="text-center text-dark mt-3">
-                    Hesabın yok mu? <a class="text-primary" href="/register/">Kayıt Ol</a>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="1" id="id_remember" name="remember" autocomplete="off">
+                        <label class="form-check-label text-light" for="id_remember">Beni hatırla</label>
+                    </div>
+                    <a class="text-light text-decoration-underline" href="#">Şifremi unuttum</a> <!-- #TODO şifremi unuttum 2FA yazılacak -->
+                </div>
+
+                <button type="submit" class="btn rmd-btn w-100" id="rmd-submit-btn">Giriş Yap</button>
+
+                <p class="rmd-meta">
+                    Hesabın yok mu? <a href="{% url 'register' %}">Kayıt Ol</a>
                 </p>
             </form>
         </div>
-    </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="{% static 'reminder_app/js/auth-common.js' %}"></script>
+    <script src="{% static 'reminder_app/js/login.js' %}"></script>
 </body>
 </html>

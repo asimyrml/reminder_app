@@ -1,0 +1,18 @@
+.rmd-login-section {
+    display: flex; justify-content: center; align-items: flex-start;
+    min-height: calc(100vh - 120px); margin-top: 32px; padding: 0 16px;
+}
+.rmd-login-card {
+    background: rgba(255,255,255,0.18);
+    border-radius: 28px;
+    box-shadow: 0 8px 40px rgba(86,103,253,0.18);
+    padding: 2.2rem;
+    width: 100%; max-width: 420px;
+    position: relative; z-index: 2;
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border: 1.5px solid rgba(255,255,255,0.22);
+}
+.rmd-login-card h3 {
+    font-weight: 700; color: #fff; margin-bottom: 1.4rem; letter-spacing: .3px; text-align: center;
+}
